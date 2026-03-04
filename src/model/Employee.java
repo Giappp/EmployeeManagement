@@ -1,20 +1,31 @@
 package model;
 
-import model.enums.Status;
+import annotation.DisplayName;
+import enums.Status;
+
+import java.time.LocalDate;
 
 public class Employee {
     private Long id;
+    @DisplayName("Họ và Tên")
     private String name;
+    @DisplayName("Email")
     private String email;
+    @DisplayName("Số điện thoại")
     private String phone;
+    @DisplayName("Trạng Thái")
     private Status status;
+    @DisplayName("Lương")
     private Double salary;
+    @DisplayName("Phòng ban")
     private String division;
+    @DisplayName("Ngày tuyển dụng")
+    private LocalDate joinDate;
 
     public Employee() {
     }
 
-    public Employee(Long id, String name, String email, String phone, Status status, Double salary, String division) {
+    public Employee(Long id, String name, String email, String phone, Status status, Double salary, String division, LocalDate joinDate) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -22,6 +33,18 @@ public class Employee {
         this.status = status;
         this.salary = salary;
         this.division = division;
+        this.joinDate = joinDate;
+    }
+
+    public Employee(Employee employee) {
+        this.id = employee.id;
+        this.name = employee.getName();
+        this.email = employee.getEmail();
+        this.phone = employee.getPhone();
+        this.status = employee.getStatus();
+        this.salary = employee.getSalary();
+        this.division = employee.getDivision();
+        this.joinDate = employee.getJoinDate();
     }
 
     public Long getId() {
@@ -78,6 +101,14 @@ public class Employee {
 
     public void setDivision(String division) {
         this.division = division;
+    }
+
+    public LocalDate getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(LocalDate joinDate) {
+        this.joinDate = joinDate;
     }
 
     @Override

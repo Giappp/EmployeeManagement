@@ -6,5 +6,5 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MockDatabase {
-    public final List<Employee> EMPLOYEES = new ArrayList<>();
+    public final List<Employee> employees = new ArrayList<>();
 }

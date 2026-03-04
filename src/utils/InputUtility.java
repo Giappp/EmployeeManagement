@@ -1,6 +1,6 @@
 package utils;
 
-import model.enums.Status;
+import enums.Status;
 import validation.Validator;
 
 import java.io.BufferedReader;

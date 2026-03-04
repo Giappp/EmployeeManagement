@@ -1,29 +1,17 @@
 package services;
 
-import dto.SearchFilter;
 import model.Employee;
-import repositories.EmployeeRepository;
 
 import java.util.List;
 
-public class EmployeeService {
-    EmployeeRepository employeeRepository;
+public interface EmployeeService {
+    void insert();
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
+    void update();
 
-    public void addEmployee(Employee employee) {
-        employeeRepository.save(employee);
-    }
+    void remove();
 
-    public void display() {
-        for (Employee employee : employeeRepository.findAll()) {
-            System.out.println(employee);
-        }
-    }
+    void display();
 
-    public List<Employee> search(SearchFilter filter) {
-        return employeeRepository.search(filter);
-    }
+    List<Employee> search();
 }

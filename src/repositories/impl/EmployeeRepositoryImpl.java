@@ -12,25 +12,33 @@ import java.util.function.Predicate;
 public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Override
-    public void save(Employee entity) {
-        dbContext.EMPLOYEES.add(entity);
+    public void save(Employee employee) {
+        Optional<Employee> existing = findById(employee.getId());
+
+        if (existing.isPresent()) {
+            int index = dbContext.employees.indexOf(existing.get());
+            dbContext.employees.set(index, employee);
+        } else {
+            dbContext.employees.add(employee);
+        }
     }
+
 
     @Override
     public void remove(Employee entity) {
-        dbContext.EMPLOYEES.remove(entity);
+        dbContext.employees.remove(entity);
     }
 
     @Override
-    public Optional<Employee> findById(Integer id) {
-        return dbContext.EMPLOYEES.stream()
+    public Optional<Employee> findById(Long id) {
+        return dbContext.employees.stream()
                 .filter(e -> e.getId().equals(id))
                 .findFirst();
     }
 
     @Override
     public List<Employee> findAll() {
-        return new ArrayList<>(dbContext.EMPLOYEES);
+        return new ArrayList<>(dbContext.employees);
     }
 
     @Override
@@ -50,9 +58,16 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         if (searchFilter.maxSalary != null) {
             condition = condition.and(e -> e.getSalary() <= searchFilter.maxSalary);
         }
-        
-        return dbContext.EMPLOYEES.stream()
+
+        return dbContext.employees.stream()
                 .filter(condition)
                 .toList();
+    }
+
+    @Override
+    public Employee findByIdForUpdate(Long id) {
+        Employee original = findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên với Id: " + id));
+        return new Employee(original);
     }
 }
