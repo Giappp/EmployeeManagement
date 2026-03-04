@@ -1,7 +1,8 @@
 package services.impl;
 
-import annotation.DisplayName;
-import dto.SearchFilter;
+import constants.PromptMessage;
+import constants.ResultMessage;
+import constants.ValidationMessage;
 import enums.ErrorCode;
 import enums.Status;
 import exception.ResourceNotFoundException;
@@ -11,6 +12,7 @@ import services.EmployeeService;
 import utils.ConverterUtility;
 import utils.InputUtility;
 import utils.MessageUtility;
+import validation.Validator;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -43,17 +45,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void insert() {
         Employee employee = doInsert();
         employeeRepository.save(employee);
-        System.out.println("Thêm nhân viên mới thành công!");
+        System.out.println(ResultMessage.INSERT_SUCCESS);
     }
 
     @Override
     public void update() {
-        Long updatedEmployeeId = InputUtility.getNumber("Nhập Id nhân viên cần sửa: ", Long::parseLong);
+        Long updatedEmployeeId = InputUtility.getNumber(PromptMessage.GET_ID_TO_UPDATE, Long::parseLong);
         Employee employee = employeeRepository.findByIdForUpdate(updatedEmployeeId);
         int choice;
         do {
             MessageUtility.printUpdateMenu();
-            choice = InputUtility.getNumber("Lựa chọn của bạn: ", Integer::parseInt);
+            choice = InputUtility.getNumber(PromptMessage.CHOICE, Integer::parseInt);
             if (choice == 99) {
                 for (Field field : fieldMap.values()) {
                     doUpdate(employee, field);
@@ -61,31 +63,35 @@ public class EmployeeServiceImpl implements EmployeeService {
             } else if (fieldMap.containsKey(choice)) {
                 doUpdate(employee, fieldMap.get(choice));
             } else {
-                System.out.println("Lựa chọn không hợp lệ");
+                System.out.println(ValidationMessage.INVALID_CHOICE);
             }
         } while (choice != 0 && choice != -1);
         if (choice == 0) {
             employeeRepository.save(employee);
-            System.out.println("Lưu thông tin thành công!");
+            System.out.println(ResultMessage.UPDATE_SUCCESS);
         }
     }
 
     @Override
     public void remove() {
-        Long removedEmployeeId = InputUtility.getNumber("Nhập Id nhân viên cần xóa: ", Long::parseLong);
+        Long removedEmployeeId = InputUtility.getNumber(PromptMessage.GET_ID_TO_REMOVE, Long::parseLong);
+
         Employee employee = employeeRepository.findById(removedEmployeeId)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.EMPLOYEE_ID_NOT_FOUND));
         employeeRepository.remove(employee);
-        System.out.println("Xóa nhân viên thành công");
+
+        System.out.println(ResultMessage.REMOVE_SUCCESS);
     }
 
     @Override
     public void display() {
         List<Employee> employees = employeeRepository.findAll();
+
         if (employees.isEmpty()) {
-            System.out.println("Danh sách nhân viên rỗng");
+            System.out.println(ResultMessage.EMPTY_LIST);
             return;
         }
+
         for (Employee employee : employees) {
             System.out.println(employee);
         }
@@ -93,22 +99,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> search() {
-        SearchFilter filter = doSearch();
-        return employeeRepository.search(filter);
-    }
-
-    private SearchFilter doSearch() {
-
+        return null;
     }
 
     private Employee doInsert() {
-        Long id = InputUtility.getNumber("Id: ", Long::parseLong);
-        String name = InputUtility.getString("Nhập tên: ");
-        String email = InputUtility.getEmail("Email: ");
-        String phone = InputUtility.getPhone("Phone: ");
-        Status status = InputUtility.getStatus("Trạng thái nhân viên: ");
-        Double salary = InputUtility.getNumber("Lương: ", Double::parseDouble);
-        String division = InputUtility.getString("Division: ");
+        Long id = InputUtility.getNumber(PromptMessage.GET_ID, Long::parseLong);
+        String name = InputUtility.getValidInput(PromptMessage.GET_NAME, Validator::stringNotBlank, ValidationMessage.INVALID_NAME);
+        String email = InputUtility.getEmail(PromptMessage.GET_EMAIL);
+        String phone = InputUtility.getPhone(PromptMessage.GET_PHONE);
+        Status status = InputUtility.getStatus(PromptMessage.GET_STATUS);
+        Double salary = InputUtility.getNumber(PromptMessage.GET_SALARY, Double::parseDouble);
+        String division = InputUtility.getValidInput(PromptMessage.GET_DIVISION, Validator::stringNotBlank, ValidationMessage.INVALID_DIVISION);
         LocalDate joinDate = LocalDate.now();
         return new Employee(id, name, email, phone, status, salary, division, joinDate);
     }
@@ -116,17 +117,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     private void doUpdate(Employee employee, Field field) {
         try {
             if (field.getName().equalsIgnoreCase("status")) {
-                Status newStatus = InputUtility.getStatus("Nhập giá trị mới cho status: ");
+                Status newStatus = InputUtility.getStatus(PromptMessage.GET_STATUS);
                 field.set(employee, newStatus);
                 return;
             }
-            String input = InputUtility.getString("Nhập giá trị mới cho " + field.getAnnotation(DisplayName.class).value() + ": ");
+            String input = InputUtility.getValidInput(PromptMessage.UPDATE_VALUE, Validator::stringNotBlank, ValidationMessage.INVALID_VALUE);
             Object convertedValue = ConverterUtility.convertToFieldType(input, field.getType());
 
             field.set(employee, convertedValue);
-            System.out.println("Cập nhật thành công");
-        } catch (IllegalAccessException e) {
-            System.out.println("Lỗi khi câp nhật: " + e.getMessage());
+            System.out.println(ResultMessage.UPDATE_SUCCESS);
+        } catch (IllegalAccessException ignored) {
+
         }
     }
 }

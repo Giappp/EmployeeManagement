@@ -1,5 +1,7 @@
 package controller;
 
+import constants.PromptMessage;
+import constants.ValidationMessage;
 import services.EmployeeService;
 import utils.InputUtility;
 import utils.MessageUtility;
@@ -16,7 +18,7 @@ public class EmployeeController {
         int input;
         do {
             MessageUtility.printMainMenu();
-            input = InputUtility.getNumber("Lựa chọn: ", Integer::parseInt);
+            input = InputUtility.getNumber(PromptMessage.CHOICE, Integer::parseInt);
             handleUserInsertRequest(input);
         } while (input != 0);
     }
@@ -30,7 +32,7 @@ public class EmployeeController {
             case 0 -> {
 
             }
-            default -> System.out.println("Hãy chọn đúng chức năng");
+            default -> System.out.println(ValidationMessage.INVALID_CHOICE);
         }
     }
 }

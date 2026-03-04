@@ -29,8 +29,8 @@ public class MessageUtility {
             }
         }
         System.out.println();
-        System.out.println("-1. Hủy cập nhật");
-        System.out.println("0. để lưu thông tin và thoát.");
+        System.out.println("-1. Để hủy cập nhật");
+        System.out.println("0. Để lưu thông tin và thoát.");
         System.out.println("99. Cập nhật tất cả");
     }
 

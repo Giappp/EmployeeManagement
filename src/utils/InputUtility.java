@@ -1,65 +1,75 @@
 package utils;
 
+import constants.ValidationMessage;
 import enums.Status;
 import validation.Validator;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class InputUtility {
     public static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    public static String getString(String message) {
-        while (true) {
-            System.out.print(message);
-            try {
-                return br.readLine();
-            } catch (IOException ioException) {
-                System.out.println("Lỗi Input! Hãy thử lại");
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
+    public static String getEmail(String prompt) {
+        return getValidInput(prompt, Validator::isEmailValid, ValidationMessage.INVALID_EMAIL);
     }
 
-    public static String getEmail(String message) {
-        while (true) {
-            String email = getString(message);
-            if (Validator.isEmailValid(email)) return email;
-            System.out.println("Email không hợp lệ");
-        }
+    public static String getPhone(String prompt) {
+        return getValidInput(prompt, Validator::isPhoneValid, ValidationMessage.INVALID_PHONE);
     }
 
-    public static String getPhone(String message) {
-        while (true) {
-            String phone = getString(message);
-            if (Validator.isPhoneValid(phone)) return phone;
-            System.out.println("Số điên thoại không hợp lệ");
-        }
-    }
-
-    public static Status getStatus(String message) {
+    public static Status getStatus(String prompt) {
         while (true) {
             System.out.println(MessageUtility.getStatusMessage());
-            int choice = getNumber(message, Integer::parseInt);
+            int choice = getNumber(prompt, Integer::parseInt);
             if (choice >= Status.values().length) {
-                System.out.println("Giá trị không hợp lệ");
+                System.out.println(ValidationMessage.INVALID_VALUE);
                 continue;
             }
             return Status.values()[choice];
         }
     }
 
-    public static <T extends Number> T getNumber(String message, Function<String, T> parser) {
+    public static <T extends Number> T getNumber(String prompt, Function<String, T> parser) {
         while (true) {
-            System.out.print(message);
+            System.out.print(prompt);
             try {
                 return parser.apply(br.readLine());
             } catch (Exception e) {
-                System.out.println("Invalid number!");
+                System.out.println(ValidationMessage.INVALID_VALUE);
             }
+        }
+    }
+
+    public static String getValidInput(String prompt, Predicate<String> validation, String errorMessage) {
+        while (true) {
+            System.out.println(prompt);
+            try {
+                String input = br.readLine();
+                if (validation.test(input)) {
+                    return input;
+                }
+            } catch (Exception ignored) {
+
+            }
+            System.out.println(errorMessage);
+        }
+    }
+
+    public static <T> T getBaseInput(String prompt, Predicate<T> validator, Function<String, T> parser, String errorMessage) {
+        while (true) {
+            try {
+                String input = br.readLine();
+                T value = parser.apply(input);
+                if (validator.test(value)) {
+                    return value;
+                }
+            } catch (Exception e) {
+
+            }
+            System.out.println(errorMessage);
         }
     }
 }

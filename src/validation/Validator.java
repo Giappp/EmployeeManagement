@@ -28,4 +28,8 @@ public class Validator {
         Matcher phoneMatcher = VIETNAMESE_PHONE_PATTERN.matcher(phone);
         return phoneMatcher.matches();
     }
+
+    public static boolean stringNotBlank(String str) {
+        return !str.trim().isBlank();
+    }
 }
