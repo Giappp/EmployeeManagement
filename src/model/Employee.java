@@ -1,25 +1,17 @@
 package model;
 
-import annotation.DisplayName;
 import enums.Status;
 
 import java.time.LocalDate;
 
 public class Employee {
     private Long id;
-    @DisplayName("Họ và Tên")
     private String name;
-    @DisplayName("Email")
     private String email;
-    @DisplayName("Số điện thoại")
     private String phone;
-    @DisplayName("Trạng Thái")
     private Status status;
-    @DisplayName("Lương")
     private Double salary;
-    @DisplayName("Phòng ban")
     private String division;
-    @DisplayName("Ngày tuyển dụng")
     private LocalDate joinDate;
 
     public Employee() {
