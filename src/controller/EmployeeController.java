@@ -3,7 +3,7 @@ package controller;
 import constants.Messages;
 import services.EmployeeService;
 import utils.InputUtility;
-import utils.MessageUtility;
+import utils.MenuUtility;
 
 
 public class EmployeeController {
@@ -16,7 +16,7 @@ public class EmployeeController {
     public void run() {
         int input;
         do {
-            MessageUtility.printMainMenu();
+            MenuUtility.mainMenu();
             input = InputUtility.getNumber(Messages.Prompt.CHOICE, Integer::parseInt);
             handleUserInsertRequest(input);
         } while (input != 0);

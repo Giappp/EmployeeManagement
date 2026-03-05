@@ -1,5 +1,6 @@
 package model;
 
+import constants.Config;
 import enums.Status;
 
 import java.time.LocalDate;
@@ -113,6 +114,7 @@ public class Employee {
                 ", status=" + status +
                 ", salary=" + salary +
                 ", division='" + division + '\'' +
+                ", joinDate=" + joinDate.format(Config.formatter) +
                 '}';
     }
 }

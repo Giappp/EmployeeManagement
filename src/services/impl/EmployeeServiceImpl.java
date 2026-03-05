@@ -8,6 +8,7 @@ import model.Employee;
 import repositories.EmployeeRepository;
 import services.EmployeeService;
 import utils.InputUtility;
+import utils.MenuUtility;
 import validation.Validator;
 
 import java.time.LocalDate;
@@ -22,8 +23,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     private static final Map<Integer, Consumer<Employee>> updateActions = new HashMap<>();
 
     static {
-        updateActions.put(1, emp -> emp.setName(InputUtility.getValidInput("Nhập Tên mới: ", Validator::stringNotBlank, "Tên không được để trống")));
-//        updateActions.put(2,
+        updateActions.put(1, emp -> emp.setName(InputUtility.getValidInput(Messages.Prompt.NAME_UPDATE, Validator::stringNotBlank, Messages.Error.INVALID_NAME)));
+        updateActions.put(2, emp -> emp.setEmail(InputUtility.getValidInput(Messages.Prompt.EMAIL_UPDATE, Validator::isEmailValid, Messages.Error.INVALID_EMAIL)));
+        updateActions.put(3, emp -> emp.setPhone(InputUtility.getValidInput(Messages.Prompt.PHONE_UPDATE, Validator::isPhoneValid, Messages.Error.INVALID_PHONE)));
+        updateActions.put(4, emp -> emp.setStatus(InputUtility.getStatus(Messages.Prompt.STATUS_UPDATE)));
+        updateActions.put(5, emp -> emp.setSalary(InputUtility.getNumber(Messages.Prompt.SALARY_UPDATE, Double::parseDouble)));
+        updateActions.put(6, emp -> emp.setDivision(InputUtility.getValidInput(Messages.Prompt.DIVISION_UPDATE, Validator::stringNotBlank, Messages.Error.INVALID_DIVISION)));
+        updateActions.put(7, emp -> emp.setJoinDate(InputUtility.getDate(Messages.Prompt.JOIN_DATE_UPDATE)));
     }
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
@@ -41,7 +47,37 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void update() {
         Long updatedEmployeeId = InputUtility.getNumber(Messages.Prompt.ID_UPDATE, Long::parseLong);
         Employee employee = employeeRepository.findByIdForUpdate(updatedEmployeeId);
+        boolean isFinished = false;
+        while (!isFinished) {
+            MenuUtility.updateMenu();
+            int choice = InputUtility.getNumber(Messages.Prompt.CHOICE, Integer::parseInt);
 
+            switch (choice) {
+                case 0 -> {
+                    // Lưu và thoát
+                    employeeRepository.save(employee);
+                    System.out.println(Messages.Success.UPDATE);
+                    isFinished = true;
+                }
+                case -1 -> {
+                    System.out.println(Messages.DEFAULT.CANCEL);
+                    isFinished = true;
+                }
+                case 99 -> {
+                    updateActions.values().forEach(employeeConsumer -> employeeConsumer.accept(employee));
+                    employeeRepository.save(employee);
+                    isFinished = true;
+                }
+                default -> {
+                    // Thực thi action dựa trên Map
+                    if (updateActions.containsKey(choice)) {
+                        updateActions.get(choice).accept(employee);
+                    } else {
+                        System.out.println(Messages.Error.INVALID_CHOICE);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -82,7 +118,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Status status = InputUtility.getStatus(Messages.Prompt.STATUS);
         Double salary = InputUtility.getNumber(Messages.Prompt.SALARY, Double::parseDouble);
         String division = InputUtility.getValidInput(Messages.Prompt.DIVISION, Validator::stringNotBlank, Messages.Error.INVALID_DIVISION);
-        LocalDate joinDate = LocalDate.now();
+        LocalDate joinDate = InputUtility.getDate(Messages.Prompt.JOIN_DATE);
         return new Employee(id, name, email, phone, status, salary, division, joinDate);
     }
 }

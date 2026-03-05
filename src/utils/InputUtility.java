@@ -1,19 +1,21 @@
 package utils;
 
+import constants.Config;
 import constants.Messages;
 import enums.Status;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class InputUtility {
-    public static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     public static Status getStatus(String prompt) {
         while (true) {
-            System.out.println(MessageUtility.getStatusMessage());
+            System.out.println(MenuUtility.getStatusMessage());
             int choice = getNumber(prompt, Integer::parseInt);
             if (choice >= Status.values().length) {
                 System.out.println(Messages.Error.INVALID_VALUE);
@@ -29,7 +31,7 @@ public class InputUtility {
             try {
                 return parser.apply(br.readLine());
             } catch (Exception e) {
-                System.out.println(Messages.Error.INVALID_VALUE);
+                System.out.println(Messages.Error.INVALID_NUMBER);
             }
         }
     }
@@ -43,9 +45,20 @@ public class InputUtility {
                     return input;
                 }
             } catch (Exception ignored) {
-
+                System.out.println(errorMessage);
             }
-            System.out.println(errorMessage);
+        }
+    }
+
+    public static LocalDate getDate(String prompt) {
+        while (true) {
+            System.out.println(prompt);
+            try {
+                String input = br.readLine();
+                return LocalDate.parse(input, Config.formatter);
+            } catch (Exception ignored) {
+                System.out.println();
+            }
         }
     }
 

@@ -2,7 +2,7 @@ package utils;
 
 import enums.Status;
 
-public class MessageUtility {
+public class MenuUtility {
     public static String getStatusMessage() {
         StringBuilder messageBuilder = new StringBuilder();
         messageBuilder.append("Lựa chọn trạng thái nhân viên: \n");
@@ -12,15 +12,21 @@ public class MessageUtility {
         return messageBuilder.toString();
     }
 
-    public static void printUpdateMenu() {
+    public static void updateMenu() {
         System.out.println("--- CHỌN TRƯỜNG CẦN CẬP NHẬT ---");
-        System.out.println();
+        System.out.println("1. Cập nhật tên");
+        System.out.println("2. Cập nhật email");
+        System.out.println("3. Cập nhật số điện thoại");
+        System.out.println("4. Cập nhật trạng thái");
+        System.out.println("5. Cập nhật lương");
+        System.out.println("6. Cập nhật phòng ban");
+        System.out.println("7. Cập nhật ngày gia nhập");
         System.out.println("-1. Để hủy cập nhật");
         System.out.println("0. Để lưu thông tin và thoát.");
         System.out.println("99. Cập nhật tất cả");
     }
 
-    public static void printMainMenu() {
+    public static void mainMenu() {
         System.out.println("========== Employee Management ==========");
         System.out.println("Menu: ");
         System.out.println("1. Thêm mới nhân viên");
