@@ -1,8 +1,6 @@
 package services.impl;
 
-import constants.PromptMessage;
-import constants.ResultMessage;
-import constants.ValidationMessage;
+import constants.Messages;
 import enums.ErrorCode;
 import enums.Status;
 import exception.ResourceNotFoundException;
@@ -13,10 +11,20 @@ import utils.InputUtility;
 import validation.Validator;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class EmployeeServiceImpl implements EmployeeService {
     EmployeeRepository employeeRepository;
+
+    private static final Map<Integer, Consumer<Employee>> updateActions = new HashMap<>();
+
+    static {
+        updateActions.put(1, emp -> emp.setName(InputUtility.getValidInput("Nhập Tên mới: ", Validator::stringNotBlank, "Tên không được để trống")));
+//        updateActions.put(2,
+    }
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
@@ -26,25 +34,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void insert() {
         Employee employee = doInsert();
         employeeRepository.save(employee);
-        System.out.println(ResultMessage.INSERT_SUCCESS);
+        System.out.println(Messages.Success.INSERT);
     }
 
     @Override
     public void update() {
-        Long updatedEmployeeId = InputUtility.getNumber(PromptMessage.GET_ID_TO_UPDATE, Long::parseLong);
+        Long updatedEmployeeId = InputUtility.getNumber(Messages.Prompt.ID_UPDATE, Long::parseLong);
         Employee employee = employeeRepository.findByIdForUpdate(updatedEmployeeId);
 
     }
 
     @Override
     public void remove() {
-        Long removedEmployeeId = InputUtility.getNumber(PromptMessage.GET_ID_TO_REMOVE, Long::parseLong);
+        Long removedEmployeeId = InputUtility.getNumber(Messages.Prompt.ID_REMOVE, Long::parseLong);
 
         Employee employee = employeeRepository.findById(removedEmployeeId)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.EMPLOYEE_ID_NOT_FOUND));
         employeeRepository.remove(employee);
 
-        System.out.println(ResultMessage.REMOVE_SUCCESS);
+        System.out.println(Messages.Success.REMOVE);
     }
 
     @Override
@@ -52,7 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<Employee> employees = employeeRepository.findAll();
 
         if (employees.isEmpty()) {
-            System.out.println(ResultMessage.EMPTY_LIST);
+            System.out.println(Messages.Success.EMPTY);
             return;
         }
 
@@ -67,13 +75,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private Employee doInsert() {
-        Long id = InputUtility.getNumber(PromptMessage.GET_ID, Long::parseLong);
-        String name = InputUtility.getValidInput(PromptMessage.GET_NAME, Validator::stringNotBlank, ValidationMessage.INVALID_NAME);
-        String email = InputUtility.getEmail(PromptMessage.GET_EMAIL);
-        String phone = InputUtility.getPhone(PromptMessage.GET_PHONE);
-        Status status = InputUtility.getStatus(PromptMessage.GET_STATUS);
-        Double salary = InputUtility.getNumber(PromptMessage.GET_SALARY, Double::parseDouble);
-        String division = InputUtility.getValidInput(PromptMessage.GET_DIVISION, Validator::stringNotBlank, ValidationMessage.INVALID_DIVISION);
+        Long id = InputUtility.getNumber(Messages.Prompt.ID, Long::parseLong);
+        String name = InputUtility.getValidInput(Messages.Prompt.NAME, Validator::stringNotBlank, Messages.Error.INVALID_NAME);
+        String email = InputUtility.getValidInput(Messages.Prompt.EMAIL, Validator::isEmailValid, Messages.Error.INVALID_EMAIL);
+        String phone = InputUtility.getValidInput(Messages.Prompt.PHONE, Validator::isPhoneValid, Messages.Error.INVALID_PHONE);
+        Status status = InputUtility.getStatus(Messages.Prompt.STATUS);
+        Double salary = InputUtility.getNumber(Messages.Prompt.SALARY, Double::parseDouble);
+        String division = InputUtility.getValidInput(Messages.Prompt.DIVISION, Validator::stringNotBlank, Messages.Error.INVALID_DIVISION);
         LocalDate joinDate = LocalDate.now();
         return new Employee(id, name, email, phone, status, salary, division, joinDate);
     }

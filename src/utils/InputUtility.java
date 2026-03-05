@@ -1,8 +1,7 @@
 package utils;
 
-import constants.ValidationMessage;
+import constants.Messages;
 import enums.Status;
-import validation.Validator;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,20 +11,12 @@ import java.util.function.Predicate;
 public class InputUtility {
     public static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    public static String getEmail(String prompt) {
-        return getValidInput(prompt, Validator::isEmailValid, ValidationMessage.INVALID_EMAIL);
-    }
-
-    public static String getPhone(String prompt) {
-        return getValidInput(prompt, Validator::isPhoneValid, ValidationMessage.INVALID_PHONE);
-    }
-
     public static Status getStatus(String prompt) {
         while (true) {
             System.out.println(MessageUtility.getStatusMessage());
             int choice = getNumber(prompt, Integer::parseInt);
             if (choice >= Status.values().length) {
-                System.out.println(ValidationMessage.INVALID_VALUE);
+                System.out.println(Messages.Error.INVALID_VALUE);
                 continue;
             }
             return Status.values()[choice];
@@ -38,7 +29,7 @@ public class InputUtility {
             try {
                 return parser.apply(br.readLine());
             } catch (Exception e) {
-                System.out.println(ValidationMessage.INVALID_VALUE);
+                System.out.println(Messages.Error.INVALID_VALUE);
             }
         }
     }

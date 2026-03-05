@@ -1,7 +1,6 @@
 package controller;
 
-import constants.PromptMessage;
-import constants.ValidationMessage;
+import constants.Messages;
 import services.EmployeeService;
 import utils.InputUtility;
 import utils.MessageUtility;
@@ -18,7 +17,7 @@ public class EmployeeController {
         int input;
         do {
             MessageUtility.printMainMenu();
-            input = InputUtility.getNumber(PromptMessage.CHOICE, Integer::parseInt);
+            input = InputUtility.getNumber(Messages.Prompt.CHOICE, Integer::parseInt);
             handleUserInsertRequest(input);
         } while (input != 0);
     }
@@ -32,7 +31,7 @@ public class EmployeeController {
             case 0 -> {
 
             }
-            default -> System.out.println(ValidationMessage.INVALID_CHOICE);
+            default -> System.out.println(Messages.Error.INVALID_CHOICE);
         }
     }
 }

@@ -1,10 +1,6 @@
 package utils;
 
-import annotation.DisplayName;
 import enums.Status;
-import model.Employee;
-
-import java.lang.reflect.Field;
 
 public class MessageUtility {
     public static String getStatusMessage() {
@@ -18,16 +14,6 @@ public class MessageUtility {
 
     public static void printUpdateMenu() {
         System.out.println("--- CHỌN TRƯỜNG CẦN CẬP NHẬT ---");
-        Field[] fields = Employee.class.getDeclaredFields();
-
-        int index = 1;
-        for (Field field : fields) {
-            if (field.isAnnotationPresent(DisplayName.class)) {
-                DisplayName displayName = field.getAnnotation(DisplayName.class);
-                System.out.println(index + "." + displayName.value());
-                index++;
-            }
-        }
         System.out.println();
         System.out.println("-1. Để hủy cập nhật");
         System.out.println("0. Để lưu thông tin và thoát.");
