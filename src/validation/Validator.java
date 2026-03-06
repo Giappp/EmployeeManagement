@@ -9,7 +9,10 @@ public class Validator {
 
     private static final String VIETNAMESE_PHONE_REGEX = "^(03|05|07|09)[0-9]{8}";
 
+    private static final String NAME_REGEX = "[a-zA-Z]";
+
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+    private static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
 
     private static final Pattern VIETNAMESE_PHONE_PATTERN = Pattern.compile(VIETNAMESE_PHONE_REGEX);
 
@@ -31,5 +34,10 @@ public class Validator {
 
     public static boolean stringNotBlank(String str) {
         return !str.trim().isBlank();
+    }
+
+    public static boolean isLetter(String test) {
+        Matcher letterMatcher = NAME_PATTERN.matcher(test);
+        return letterMatcher.matches();
     }
 }

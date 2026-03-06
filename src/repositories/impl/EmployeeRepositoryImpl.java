@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,6 +24,7 @@ import static constants.Config.*;
 
 public class EmployeeRepositoryImpl implements EmployeeRepository {
     private final List<Employee> employees;
+    private final ReentrantLock lock = new ReentrantLock();
 
     public EmployeeRepositoryImpl() {
         employees = readFromFile();
@@ -94,6 +96,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     @Override
     public void persist() {
         Path tempPath = FILE_PATH.resolveSibling(FILE_PATH.getFileName() + ".tmp");
+        lock.lock();
         try {
             try (BufferedWriter writer = Files.newBufferedWriter(tempPath, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
 
@@ -108,9 +111,14 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
                 writer.flush();
             }
             Files.move(tempPath, FILE_PATH, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            lock.unlock();
         } catch (IOException e) {
             // ignored
         }
+    }
+
+    public ReentrantLock getLock() {
+        return lock;
     }
 
     private List<Employee> readFromFile() {

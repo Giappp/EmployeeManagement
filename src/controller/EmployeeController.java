@@ -90,7 +90,7 @@ public class EmployeeController {
 
     private void doInsert() {
         Long id = InputUtility.getNumber(Messages.Prompt.ID, Long::parseLong);
-        String name = InputUtility.getValidInput(Messages.Prompt.NAME, Validator::stringNotBlank, Messages.Error.INVALID_NAME);
+        String name = InputUtility.getValidInput(Messages.Prompt.NAME, Validator::isLetter, Messages.Error.INVALID_NAME);
         String email = InputUtility.getValidInput(Messages.Prompt.EMAIL, Validator::isEmailValid, Messages.Error.INVALID_EMAIL);
         String phone = InputUtility.getValidInput(Messages.Prompt.PHONE, Validator::isPhoneValid, Messages.Error.INVALID_PHONE);
         Status status = InputUtility.getChoice(Status.class);

@@ -10,6 +10,7 @@ import exception.ResourceNotFoundException;
 import model.Employee;
 import repositories.EmployeeRepository;
 import services.EmployeeService;
+import validation.EmployeeValidator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,28 +25,32 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void insert(Employee employee) {
         if (employeeRepository.findById(employee.getId()).isPresent()) {
-            throw new EmployeeException(ErrorCode.DUPLICATE_EMPLOYEE_ID);
+            throw new EmployeeException(ErrorCode.DUPLICATE_EMPLOYEE);
         }
+        EmployeeValidator.validate(employee);
         employeeRepository.save(employee);
         System.out.println(Messages.Success.INSERT);
     }
 
     @Override
     public void update(Employee employee) {
-        employeeRepository.save(employee);
-        System.out.println(Messages.Success.UPDATE);
+        if (employeeRepository.findById(employee.getId()).isPresent()) {
+            EmployeeValidator.validate(employee);
+            employeeRepository.save(employee);
+            System.out.println(Messages.Success.UPDATE);
+        }
     }
 
     @Override
     public Employee getById(Long id) {
         return employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.EMPLOYEE_ID_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.EMPLOYEE_NOT_FOUND));
     }
 
     @Override
     public void removeById(Long id) {
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.EMPLOYEE_ID_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
         employeeRepository.remove(employee);
 
@@ -147,20 +152,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Double totalSalary() {
+        return employeeRepository.findAll().stream()
+                .mapToDouble(Employee::getSalary)
+                .sum();
+    }
+
+    @Override
     public void save() {
         employeeRepository.persist();
         System.out.println(Messages.Success.PERSIST);
     }
 
-    private void executeSearch(SearchFilter filter) {
-        System.out.println(Messages.DEFAULT.SEARCH + filter);
-        var result = employeeRepository.search(filter);
-        if (result == null || result.isEmpty()) {
-            System.out.println(Messages.Success.SEARCH_EMPTY);
-            return;
-        }
-        for (Employee employee : result) {
-            System.out.println(employee);
-        }
-    }
 }

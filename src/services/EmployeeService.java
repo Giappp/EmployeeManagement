@@ -22,5 +22,7 @@ public interface EmployeeService {
 
     void statistic(StatisticCriteria criteria);
 
+    Double totalSalary();
+
     void save();
 }
