@@ -26,6 +26,8 @@ public class Messages {
         public static final String DIVISION_UPDATE = "Phòng ban mới cho nhân viên: ";
         public static final String JOIN_DATE = "Ngày gia nhập (định dạng dd/mm/yyyy): ";
         public static final String JOIN_DATE_UPDATE = "Ngày gia nhập mới (định dạng dd/mm/yyyy): ";
+        public static final String MIN_SALARY = "Lương nhỏ nhất";
+        public static final String MAX_SALARY = "Lương Lớn nhất";
     }
 
     public static final class Success {
@@ -33,6 +35,8 @@ public class Messages {
         public static final String UPDATE = "Cập nhật thành công";
         public static final String REMOVE = "Xóa nhân viên thành công";
         public static final String EMPTY = "Dach sách nhân viên đang rỗng";
+        public static final String SEARCH_EMPTY = "Không tìm thấy nhân viên với tiêu chí trên";
+        public static final String PERSIST = "Save success";
     }
 
     public static final class Error {
@@ -43,9 +47,11 @@ public class Messages {
         public static final String INVALID_CHOICE = "Lựa chọn không hợp lệ";
         public static final String INVALID_VALUE = "Giá trị không hợp lệ";
         public static final String INVALID_NUMBER = "Số không hợp lệ";
+        public static final String INVALID_DATE = "Định dạng ngày không hợp lệ";
     }
 
     public static final class DEFAULT {
+        public static final String SEARCH = "Bắt đầu tìm kiếm với bộ lọc";
         public static final String CANCEL = "Đã hủy hành động";
         public static final String CANCEL_AND_SAVE = "Lưu thay đổi thành công";
     }

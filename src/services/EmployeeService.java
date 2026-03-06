@@ -1,9 +1,5 @@
 package services;
 
-import model.Employee;
-
-import java.util.List;
-
 public interface EmployeeService {
     void insert();
 
@@ -13,5 +9,11 @@ public interface EmployeeService {
 
     void display();
 
-    List<Employee> search();
+    void search();
+
+    void sort();
+
+    void statistic();
+
+    void save();
 }

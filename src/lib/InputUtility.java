@@ -1,4 +1,4 @@
-package utils;
+package lib;
 
 import constants.Config;
 import constants.Messages;
@@ -15,7 +15,7 @@ public class InputUtility {
 
     public static Status getStatus(String prompt) {
         while (true) {
-            System.out.println(MenuUtility.getStatusMessage());
+            MenuUtility.statusMenu();
             int choice = getNumber(prompt, Integer::parseInt);
             if (choice >= Status.values().length) {
                 System.out.println(Messages.Error.INVALID_VALUE);
@@ -43,10 +43,22 @@ public class InputUtility {
                 String input = br.readLine();
                 if (validation.test(input)) {
                     return input;
+                } else {
+                    System.out.println(errorMessage);
                 }
             } catch (Exception ignored) {
                 System.out.println(errorMessage);
             }
+        }
+    }
+
+    public static String getString(String prompt) {
+        System.out.println(prompt);
+        try {
+            String input = br.readLine();
+            return input.trim().isBlank() ? null : input;
+        } catch (Exception ignored) {
+            return null;
         }
     }
 
@@ -57,7 +69,7 @@ public class InputUtility {
                 String input = br.readLine();
                 return LocalDate.parse(input, Config.formatter);
             } catch (Exception ignored) {
-                System.out.println();
+                System.out.println(Messages.Error.INVALID_DATE);
             }
         }
     }

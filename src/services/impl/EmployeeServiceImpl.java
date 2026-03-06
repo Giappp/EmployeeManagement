@@ -1,14 +1,16 @@
 package services.impl;
 
 import constants.Messages;
+import dto.SearchFilter;
 import enums.ErrorCode;
 import enums.Status;
+import exception.EmployeeException;
 import exception.ResourceNotFoundException;
+import lib.InputUtility;
+import lib.MenuUtility;
 import model.Employee;
 import repositories.EmployeeRepository;
 import services.EmployeeService;
-import utils.InputUtility;
-import utils.MenuUtility;
 import validation.Validator;
 
 import java.time.LocalDate;
@@ -16,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class EmployeeServiceImpl implements EmployeeService {
     EmployeeRepository employeeRepository;
@@ -39,6 +42,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void insert() {
         Employee employee = doInsert();
+        if (employeeRepository.findById(employee.getId()).isPresent()) {
+            throw new EmployeeException(ErrorCode.DUPLICATE_EMPLOYEE_ID);
+        }
         employeeRepository.save(employee);
         System.out.println(Messages.Success.INSERT);
     }
@@ -106,8 +112,68 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> search() {
-        return null;
+    public void search() {
+        SearchFilter filter = new SearchFilter();
+        boolean isFinished = false;
+        while (!isFinished) {
+            MenuUtility.searchMenu();
+            String input = InputUtility.getString(Messages.Prompt.CHOICE);
+
+            if (input == null || input.isEmpty()) {
+                executeSearch(filter);
+                break;
+            }
+            try {
+                int choice = Integer.parseInt(input);
+
+                switch (choice) {
+                    case 0 -> isFinished = true;
+                    case 1 -> filter.name = InputUtility.getString(Messages.Prompt.NAME);
+                    case 2 -> filter.division = InputUtility.getString(Messages.Prompt.DIVISION);
+                    case 3 -> filter.status = InputUtility.getStatus(Messages.Prompt.STATUS);
+                    case 4 -> {
+                        filter.minSalary = InputUtility.getNumber(Messages.Prompt.MIN_SALARY, Double::parseDouble);
+                        filter.maxSalary = InputUtility.getNumber(Messages.Prompt.MAX_SALARY, Double::parseDouble);
+                    }
+                    case -1 -> {
+                        System.out.println(Messages.DEFAULT.CANCEL);
+                        isFinished = true;
+                    }
+                }
+            } catch (NumberFormatException ignored) {
+                System.out.println(Messages.Error.INVALID_NUMBER);
+            }
+        }
+    }
+
+    @Override
+    public void sort() {
+
+    }
+
+    @Override
+    public void statistic() {
+        Map<String, List<Employee>> map = employeeRepository.findAll()
+                .stream()
+                .collect(Collectors.groupingBy(Employee::getDivision));
+    }
+
+    @Override
+    public void save() {
+        employeeRepository.persist();
+        System.out.println(Messages.Success.PERSIST);
+    }
+
+    private void executeSearch(SearchFilter filter) {
+        System.out.println(Messages.DEFAULT.SEARCH + filter);
+        var result = employeeRepository.search(filter);
+        if (result == null || result.isEmpty()) {
+            System.out.println(Messages.Success.SEARCH_EMPTY);
+            return;
+        }
+        for (Employee employee : result) {
+            System.out.println(employee);
+        }
     }
 
     private Employee doInsert() {
