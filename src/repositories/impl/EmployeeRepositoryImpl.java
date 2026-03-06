@@ -2,9 +2,7 @@ package repositories.impl;
 
 import constants.Config;
 import dto.SearchFilter;
-import enums.ErrorCode;
 import enums.Status;
-import exception.ResourceNotFoundException;
 import model.Employee;
 import repositories.EmployeeRepository;
 
@@ -18,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static constants.Config.*;
@@ -42,6 +41,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             existing.setSalary(employee.getSalary());
             existing.setStatus(employee.getStatus());
             existing.setDivision(employee.getDivision());
+            existing.setJoinDate(employee.getJoinDate());
         } else {
             employees.add(employee);
         }
@@ -92,13 +92,6 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
-    public Employee findByIdForUpdate(Long id) {
-        Employee original = findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.EMPLOYEE_ID_NOT_FOUND));
-        return new Employee(original);
-    }
-
-    @Override
     public void persist() {
         Path tempPath = FILE_PATH.resolveSibling(FILE_PATH.getFileName() + ".tmp");
         try {
@@ -128,7 +121,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             return lines.skip(1)
                     .filter(line -> !line.isBlank())
                     .map(this::fromCsvRow)
-                    .toList();
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             return Collections.emptyList();
         }

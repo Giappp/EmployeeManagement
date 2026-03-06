@@ -1,29 +1,13 @@
 package lib;
 
-import enums.Status;
+import enums.ChoiceMapper;
 
 public class MenuUtility {
-    public static void statusMenu() {
-        StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append("Lựa chọn trạng thái nhân viên: \n");
-        for (int index = 0; index < Status.values().length; index++) {
-            messageBuilder.append(index).append(".").append(Status.values()[index]).append("\n");
-        }
-        System.out.println(messageBuilder.toString());
-    }
 
-    public static void updateMenu() {
-        System.out.println("--- CHỌN TRƯỜNG CẦN CẬP NHẬT ---");
-        System.out.println("1. Cập nhật tên");
-        System.out.println("2. Cập nhật email");
-        System.out.println("3. Cập nhật số điện thoại");
-        System.out.println("4. Cập nhật trạng thái");
-        System.out.println("5. Cập nhật lương");
-        System.out.println("6. Cập nhật phòng ban");
-        System.out.println("7. Cập nhật ngày gia nhập");
-        System.out.println("-1. Để hủy cập nhật");
-        System.out.println("0. Để lưu thông tin và thoát.");
-        System.out.println("99. Cập nhật tất cả");
+    public static <E extends ChoiceMapper> void choiceMenu(Class<E> choices) {
+        for (E value : choices.getEnumConstants()) {
+            System.out.printf("%d. %s\n", value.getChoice(), value.getName());
+        }
     }
 
     public static void mainMenu() {
@@ -40,15 +24,6 @@ public class MenuUtility {
         System.out.println("0. Exit");
     }
 
-    public static void searchMenu() {
-        System.out.println("--- BỘ LỌC TÌM KIẾM ---");
-        System.out.println("1. Theo tên");
-        System.out.println("2. Phòng ban");
-        System.out.println("3. Trạng thái");
-        System.out.println("4. Khoảng lương");
-        System.out.println("Enter: Bắt đầu tìm kiếm");
-        System.out.println("0. Thoát tìm kiếm");
-    }
 
     public static void sortMenu() {
         System.out.println("--- TIÊU CHÍ SẮP XẾP ---");

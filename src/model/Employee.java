@@ -117,4 +117,8 @@ public class Employee {
                 ", joinDate=" + joinDate.format(Config.formatter) +
                 '}';
     }
+
+    public boolean isActive() {
+        return status.equals(Status.ACTIVE);
+    }
 }

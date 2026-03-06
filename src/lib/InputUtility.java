@@ -2,7 +2,7 @@ package lib;
 
 import constants.Config;
 import constants.Messages;
-import enums.Status;
+import enums.ChoiceMapper;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -13,18 +13,6 @@ import java.util.function.Predicate;
 public class InputUtility {
     private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    public static Status getStatus(String prompt) {
-        while (true) {
-            MenuUtility.statusMenu();
-            int choice = getNumber(prompt, Integer::parseInt);
-            if (choice >= Status.values().length) {
-                System.out.println(Messages.Error.INVALID_VALUE);
-                continue;
-            }
-            return Status.values()[choice];
-        }
-    }
-
     public static <T extends Number> T getNumber(String prompt, Function<String, T> parser) {
         while (true) {
             System.out.print(prompt);
@@ -33,6 +21,19 @@ public class InputUtility {
             } catch (Exception e) {
                 System.out.println(Messages.Error.INVALID_NUMBER);
             }
+        }
+    }
+
+    public static <E extends ChoiceMapper> E getChoice(Class<E> choices) {
+        while (true) {
+            MenuUtility.choiceMenu(choices);
+            int userInput = getNumber(Messages.Prompt.CHOICE, Integer::parseInt);
+            for (E value : choices.getEnumConstants()) {
+                if (value.getChoice() == userInput) {
+                    return value;
+                }
+            }
+            System.out.println(Messages.Error.INVALID_CHOICE);
         }
     }
 
@@ -71,21 +72,6 @@ public class InputUtility {
             } catch (Exception ignored) {
                 System.out.println(Messages.Error.INVALID_DATE);
             }
-        }
-    }
-
-    public static <T> T getBaseInput(String prompt, Predicate<T> validator, Function<String, T> parser, String errorMessage) {
-        while (true) {
-            try {
-                String input = br.readLine();
-                T value = parser.apply(input);
-                if (validator.test(value)) {
-                    return value;
-                }
-            } catch (Exception e) {
-
-            }
-            System.out.println(errorMessage);
         }
     }
 }

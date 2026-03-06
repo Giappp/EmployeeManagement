@@ -1,19 +1,26 @@
 package services;
 
+import dto.SearchFilter;
+import enums.SortCriteria;
+import enums.StatisticCriteria;
+import model.Employee;
+
 public interface EmployeeService {
-    void insert();
+    void insert(Employee employee);
 
-    void update();
+    void update(Employee employee);
 
-    void remove();
+    Employee getById(Long id);
+
+    void removeById(Long id);
 
     void display();
 
-    void search();
+    void search(SearchFilter filter);
 
-    void sort();
+    void sort(SortCriteria option);
 
-    void statistic();
+    void statistic(StatisticCriteria criteria);
 
     void save();
 }

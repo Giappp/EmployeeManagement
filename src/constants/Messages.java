@@ -28,6 +28,28 @@ public class Messages {
         public static final String JOIN_DATE_UPDATE = "Ngày gia nhập mới (định dạng dd/mm/yyyy): ";
         public static final String MIN_SALARY = "Lương nhỏ nhất";
         public static final String MAX_SALARY = "Lương Lớn nhất";
+        public static final String PARTIAL_UPDATE = "lưu thông tin và thoát";
+        public static final String UPDATE_ALL = "Cập nhật tất cả";
+        public static final String CANCEL = "Hủy";
+
+        public static final String SEARCH_NAME = "Tìm kiếm theo tên";
+        public static final String SEARCH_DIVISION = "Tìm kiếm theo phòng ban";
+        public static final String SEARCH_STATUS = "Tìm kiếm theo trạng thái";
+        public static final String SEARCH_SALARY_RANGE = "Tìm kiếm theo khoảng lương";
+        public static final String SEARCH_EXECUTE = "Bắt đầu tìm kiếm";
+        public static final String SEARCH_CANCEL = "Thoát tìm kiếm";
+
+        public static final String SORT_SALARY = "Sắp xếp theo lương";
+        public static final String SORT_NAME = "Sắp xếp theo tên (alphabet)";
+        public static final String SORT_JOIN_DATE = "Sắp xếp ngày vào làm";
+
+        public static final String STATS_TOTAL_EMPLOYEE = "Số Lượng nhân viên";
+        public static final String STATS_TOTAL_SALARY = "Tổng quỹ lương";
+        public static final String STATS_AVG_SALARY = "Lương trung bình";
+        public static final String STATS_MAX_SALARY = "Lương lớn nhất";
+        public static final String STATS_TOP_3 = "TOP 3 người lương cao nhất";
+        public static final String STATS_GROUP_BY_DIVISION = "Số lượng người theo phòng ban";
+        public static final String STATS_COUNT_ACTIVE = "Đếm số nhân viên đang hoạt động";
     }
 
     public static final class Success {

@@ -17,7 +17,5 @@ public interface EmployeeRepository {
 
     List<Employee> search(SearchFilter searchFilter);
 
-    Employee findByIdForUpdate(Long id);
-
     void persist();
 }
